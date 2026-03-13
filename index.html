@@ -74,7 +74,7 @@ color:#00ffcc;
 
 <script>
 
-const supabase = supabase.createClient(
+const supabaseClient = supabase.createClient(
 "ILAGAY_PROJECT_URL",
 "ILAGAY_ANON_PUBLIC_KEY"
 )
@@ -83,18 +83,28 @@ async function uploadFile(){
 
 const file=document.getElementById("fileInput").files[0]
 
+if(!file){
+alert("Pumili muna ng file")
+return
+}
+
 const fileName=Date.now()+"_"+file.name
 
-await supabase.storage
+const {data,error}=await supabaseClient.storage
 .from("File")
 .upload(fileName,file)
 
-const url=supabase.storage
+if(error){
+document.getElementById("link").innerHTML="Upload error: "+error.message
+return
+}
+
+const {data:publicUrl}=supabaseClient.storage
 .from("File")
-.getPublicUrl(fileName).data.publicUrl
+.getPublicUrl(fileName)
 
 document.getElementById("link").innerHTML=
-"Share link:<br>"+url
+"Share link:<br>"+publicUrl.publicUrl
 
 }
 
