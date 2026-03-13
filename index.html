@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>BhenzFlix File Sharing</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -23,7 +24,7 @@ background:#0d0d0d;
 padding:40px;
 border-radius:15px;
 text-align:center;
-box-shadow:0 0 25px red;
+box-shadow:0 0 30px red;
 width:320px;
 }
 
@@ -80,8 +81,8 @@ font-size:14px;
 <script>
 
 const supabaseClient = supabase.createClient(
-"ILAGAY_PROJECT_URL",
-"ILAGAY_ANON_PUBLIC_KEY"
+"https://carranzabhenz35-blip.github.io/BhenzFlix-File-Sharing",
+"sb_publishable_UjizI3Y13boRID5o-72fmw_88u5QraZ"
 )
 
 async function uploadFile(){
@@ -108,11 +109,11 @@ return
 
 }
 
-const {data:publicUrl}=supabaseClient.storage
+const { data } = supabaseClient.storage
 .from("File")
 .getPublicUrl(fileName)
 
-const url=publicUrl.publicUrl
+const url=data.publicUrl
 
 document.getElementById("result").innerHTML=
 `
