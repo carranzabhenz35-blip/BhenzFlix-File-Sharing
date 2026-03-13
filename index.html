@@ -2,60 +2,49 @@
 <html>
 <head>
 
-<title>BhenzFlix File Sharing</title>
+<title>BhenzFlix Upload</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
 
 body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#000000,#1a0000,#000000);
+background:black;
 color:white;
+font-family:Arial;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
 }
 
-.container{
+.box{
 background:#0d0d0d;
 padding:40px;
 border-radius:15px;
 text-align:center;
 box-shadow:0 0 30px red;
-width:320px;
 }
 
 .logo{
 font-size:35px;
-color:#ff0000;
-text-shadow:0 0 10px red,0 0 20px red;
+color:red;
+text-shadow:0 0 10px red;
 margin-bottom:20px;
 }
 
 button{
-background:#ff0000;
+background:red;
 border:none;
 padding:12px 20px;
 color:white;
-font-size:16px;
 border-radius:8px;
 cursor:pointer;
-box-shadow:0 0 10px red;
-margin-top:10px;
 }
 
-button:hover{
-background:#cc0000;
-}
-
-#result{
+#link{
 margin-top:20px;
 word-break:break-all;
-color:#00ffcc;
-font-size:14px;
 }
 
 </style>
@@ -64,25 +53,25 @@ font-size:14px;
 
 <body>
 
-<div class="container">
+<div class="box">
 
 <div class="logo">BhenzFlix</div>
 
 <input type="file" id="fileInput">
 
-<br>
+<br><br>
 
 <button onclick="uploadFile()">Upload</button>
 
-<div id="result"></div>
+<div id="link"></div>
 
 </div>
 
 <script>
 
 const supabaseClient = supabase.createClient(
-"https://carranzabhenz35-blip.github.io/BhenzFlix-File-Sharing",
-"sb_publishable_UjizI3Y13boRID5o-72fmw_88u5QraZ"
+"PASTE_PROJECT_URL",
+"PASTE_PUBLIC_ANON_KEY"
 )
 
 async function uploadFile(){
@@ -90,23 +79,21 @@ async function uploadFile(){
 const file=document.getElementById("fileInput").files[0]
 
 if(!file){
-alert("Please choose a file")
+alert("Select file")
 return
 }
 
 const fileName=Date.now()+"_"+file.name
 
-document.getElementById("result").innerHTML="Uploading..."
+document.getElementById("link").innerHTML="Uploading..."
 
-const {data,error}=await supabaseClient.storage
+const {error}=await supabaseClient.storage
 .from("File")
 .upload(fileName,file)
 
 if(error){
-
-document.getElementById("result").innerHTML="Upload Error: "+error.message
+document.getElementById("link").innerHTML="Error: "+error.message
 return
-
 }
 
 const { data } = supabaseClient.storage
@@ -115,21 +102,8 @@ const { data } = supabaseClient.storage
 
 const url=data.publicUrl
 
-document.getElementById("result").innerHTML=
-`
-Upload Successful!<br><br>
-<a href="${url}" target="_blank">${url}</a>
-<br><br>
-<button onclick="copyLink('${url}')">Copy Link</button>
-`
-
-}
-
-function copyLink(link){
-
-navigator.clipboard.writeText(link)
-
-alert("Link copied!")
+document.getElementById("link").innerHTML=
+'<a href="'+url+'" target="_blank">'+url+'</a>'
 
 }
 
