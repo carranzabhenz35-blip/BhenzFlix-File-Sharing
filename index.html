@@ -6,6 +6,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
+
 body{
 margin:0;
 font-family:Arial;
@@ -22,8 +23,8 @@ background:#0d0d0d;
 padding:40px;
 border-radius:15px;
 text-align:center;
-box-shadow:0 0 20px red;
-width:300px;
+box-shadow:0 0 25px red;
+width:320px;
 }
 
 .logo{
@@ -42,18 +43,22 @@ font-size:16px;
 border-radius:8px;
 cursor:pointer;
 box-shadow:0 0 10px red;
+margin-top:10px;
 }
 
 button:hover{
 background:#cc0000;
 }
 
-#link{
+#result{
 margin-top:20px;
 word-break:break-all;
 color:#00ffcc;
+font-size:14px;
 }
+
 </style>
+
 </head>
 
 <body>
@@ -64,11 +69,11 @@ color:#00ffcc;
 
 <input type="file" id="fileInput">
 
-<br><br>
+<br>
 
 <button onclick="uploadFile()">Upload</button>
 
-<div id="link"></div>
+<div id="result"></div>
 
 </div>
 
@@ -76,7 +81,7 @@ color:#00ffcc;
 
 const supabaseClient = supabase.createClient(
 "ILAGAY_PROJECT_URL",
-"sb_publishable_UjizI3Y13boRID5o-72fmw_88u5QraZ"
+"ILAGAY_ANON_PUBLIC_KEY"
 )
 
 async function uploadFile(){
@@ -84,27 +89,46 @@ async function uploadFile(){
 const file=document.getElementById("fileInput").files[0]
 
 if(!file){
-alert("Pumili muna ng file")
+alert("Please choose a file")
 return
 }
 
 const fileName=Date.now()+"_"+file.name
+
+document.getElementById("result").innerHTML="Uploading..."
 
 const {data,error}=await supabaseClient.storage
 .from("File")
 .upload(fileName,file)
 
 if(error){
-document.getElementById("link").innerHTML="Upload error: "+error.message
+
+document.getElementById("result").innerHTML="Upload Error: "+error.message
 return
+
 }
 
 const {data:publicUrl}=supabaseClient.storage
 .from("File")
 .getPublicUrl(fileName)
 
-document.getElementById("link").innerHTML=
-"Share link:<br>"+publicUrl.publicUrl
+const url=publicUrl.publicUrl
+
+document.getElementById("result").innerHTML=
+`
+Upload Successful!<br><br>
+<a href="${url}" target="_blank">${url}</a>
+<br><br>
+<button onclick="copyLink('${url}')">Copy Link</button>
+`
+
+}
+
+function copyLink(link){
+
+navigator.clipboard.writeText(link)
+
+alert("Link copied!")
 
 }
 
